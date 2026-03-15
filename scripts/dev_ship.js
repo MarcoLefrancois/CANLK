@@ -39,6 +39,19 @@ function main() {
         process.exit(1);
     }
 
+    // Step 3: Update Centralized Evolution Dashboard
+    console.log('\n--- Refreshing Evolution Dashboard ---');
+    const { execSync } = require('child_process');
+    const projectRoot = path.resolve(__dirname, '../../..');
+    const dashboardScript = path.resolve(projectRoot, '01_GLOBAL_STANDARDS/03_TECHNICAL_LOGIC/aspec_core/dashboard.js');
+    
+    try {
+        execSync(`node "${dashboardScript}" "${projectRoot}"`, { stdio: 'inherit' });
+        console.log('✅ Dashboard updated successfully.');
+    } catch (e) {
+        console.warn('⚠️  Could not auto-update dashboard. Please run manually.');
+    }
+
     console.log(`${colors.bright}${colors.magenta}🏁 SHIPMENT VERIFIED AND DELIVERED${colors.reset}\n`);
 }
 
