@@ -1,0 +1,53 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
+import { useDebounce } from './useDebounce';
+
+export interface Account {
+  id: string;
+  name: string;
+  account_number: string;
+  city: string;
+}
+
+/**
+ * Hook de recherche client SMART-AC (CANLK-7)
+ * Agent : front_nexus
+ */
+export function useClientSearch(query: string) {
+  const [results, setResults] = useState<Account[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  
+  const debouncedQuery = useDebounce(query, 300);
+
+  useEffect(() => {
+    if (!debouncedQuery || debouncedQuery.length < 2) {
+      setResults([]);
+      return;
+    }
+
+    async function search() {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        const { data, error: pgError } = await supabase
+          .from('accounts')
+          .select('id, name, account_number, city')
+          .or(`name.ilike.%${debouncedQuery}%,account_number.ilike.%${debouncedQuery}%,city.ilike.%${debouncedQuery}%`)
+          .limit(10);
+
+        if (pgError) throw pgError;
+        setResults(data || []);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    search();
+  }, [debouncedQuery]);
+
+  return { results, isLoading, error };
+}
