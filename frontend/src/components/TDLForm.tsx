@@ -25,7 +25,7 @@ import { ClientSearch } from './ClientSearch'
 import { ClientProfile } from './client/ClientProfile'
 import { CommercialForm } from './commercial/CommercialForm'
 import { TechnicalSpecs } from './technical/TechnicalSpecs'
-import type { Client } from '@/lib/supabase'
+import type { Account } from '@/hooks/useClientSearch'
 import { 
   User, 
   Building2, 
@@ -77,7 +77,7 @@ interface TDLFormProps {
 
 export function TDLForm({ initialData, onSubmit, onSaveDraft }: TDLFormProps) {
   const [currentStep, setCurrentStep] = useState<FormStep>('identification')
-  const [selectedClient, setSelectedClient] = useState<Client | null>(null)
+  const [selectedClient, setSelectedClient] = useState<Account | null>(null)
   const [formData, setFormData] = useState<TDLFormData>(initialData || {} as TDLFormData)
   
   const steps: { id: FormStep; label: string; icon: any }[] = [
@@ -104,7 +104,7 @@ export function TDLForm({ initialData, onSubmit, onSaveDraft }: TDLFormProps) {
     },
   })
 
-  const handleClientSelect = (client: Client) => {
+  const handleClientSelect = (client: Account) => {
     setSelectedClient(client)
     setValue('client_id', client.id)
     setFormData(prev => ({ ...prev, client_id: client.id }))

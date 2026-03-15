@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import type { Account } from '@/hooks/useClientSearch'
 import { 
   Building2, 
   MapPin, 
@@ -38,22 +39,6 @@ interface Sop {
   file_path?: string
 }
 
-interface ClientDetails {
-  id: string
-  name: string
-  code: string
-  email?: string
-  phone?: string
-  address?: string
-  city?: string
-  province?: string
-  country?: string
-  region?: 'QC' | 'ON'
-  contact_name?: string
-  contact_email?: string
-  notes?: string
-}
-
 interface ClientProfileProps {
   clientId: string
   onSopSelect?: (sop: Sop) => void
@@ -62,18 +47,18 @@ interface ClientProfileProps {
 export function ClientProfile({ clientId, onSopSelect }: ClientProfileProps) {
   const [activeTab, setActiveTab] = useState('info')
 
-  // Fetch client details
+  // Fetch client details from accounts table
   const { data: client, isLoading: clientLoading } = useQuery({
     queryKey: ['client', clientId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('clients')
+        .from('accounts')
         .select('*')
         .eq('id', clientId)
         .single()
       
       if (error) throw error
-      return data as ClientDetails
+      return data as Account
     },
     enabled: !!clientId,
   })
@@ -136,11 +121,11 @@ export function ClientProfile({ clientId, onSopSelect }: ClientProfileProps) {
               <Building2 className="h-5 w-5" />
               {client.name}
             </CardTitle>
-            <CardDescription>Code: {client.code}</CardDescription>
+            <CardDescription>Code: {client.account_number}</CardDescription>
           </div>
-          {client.region && (
-            <Badge variant={client.region === 'QC' ? 'default' : 'secondary'}>
-              {formatRegion(client.region)}
+          {client.city && (
+            <Badge variant="default">
+              {client.city}
             </Badge>
           )}
         </div>
@@ -162,22 +147,19 @@ export function ClientProfile({ clientId, onSopSelect }: ClientProfileProps) {
                 <User className="h-4 w-4 mt-1 text-muted-foreground" />
                 <div>
                   <p className="font-medium">{client.contact_name}</p>
-                  {client.contact_email && (
-                    <p className="text-sm text-muted-foreground">{client.contact_email}</p>
-                  )}
                 </div>
               </div>
             )}
 
             {/* Adresse */}
-            {(client.address || client.city) && (
+            {client.address && (
               <div className="flex items-start gap-3">
                 <MapPin className="h-4 w-4 mt-1 text-muted-foreground" />
                 <div>
-                  {client.address && <p className="text-sm">{client.address}</p>}
-                  {(client.city || client.province) && (
+                  <p className="text-sm">{client.address}</p>
+                  {client.city && (
                     <p className="text-sm text-muted-foreground">
-                      {client.city}{client.province ? `, ${client.province}` : ''}
+                      {client.city}
                     </p>
                   )}
                 </div>
@@ -191,23 +173,6 @@ export function ClientProfile({ clientId, onSopSelect }: ClientProfileProps) {
                 <a href={`tel:${client.phone}`} className="text-sm hover:underline">
                   {client.phone}
                 </a>
-              </div>
-            )}
-
-            {/* Email */}
-            {client.email && (
-              <div className="flex items-center gap-3">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <a href={`mailto:${client.email}`} className="text-sm hover:underline">
-                  {client.email}
-                </a>
-              </div>
-            )}
-
-            {/* Notes */}
-            {client.notes && (
-              <div className="p-3 bg-muted rounded-lg">
-                <p className="text-sm">{client.notes}</p>
               </div>
             )}
           </TabsContent>
