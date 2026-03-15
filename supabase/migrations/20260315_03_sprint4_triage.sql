@@ -235,6 +235,6 @@ LEFT JOIN tdl_technicians tech ON t.assigned_technician = tech.user_id
 WHERE t.status IN ('Soumis', 'En Cours - Labo', 'Info Requise');
 
 COMMENT ON TABLE tdl_technicians IS 'Table des techniciens par département pour le triage';
-COMMENT ON TABLE tdl_triage_queue IS 'File d\'attente du triage par département';
+COMMENT ON TABLE tdl_triage_queue IS 'File d''attente du triage par département';
 COMMENT ON TABLE tdl_departments IS 'Départements disponibles pour le routage';
 COMMENT ON TABLE tdl_sla_alerts IS 'Alertes SLA pour le monitoring';

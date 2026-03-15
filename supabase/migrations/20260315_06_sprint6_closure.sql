@@ -86,16 +86,19 @@ VALUES (
 ) ON CONFLICT (id) DO NOTHING;
 
 -- Storage policy: Allow public read access
-CREATE POLICY IF NOT EXISTS "Public read access for tdl-reports"
+DROP POLICY IF EXISTS "Public read access for tdl-reports" ON storage.objects;
+CREATE POLICY "Public read access for tdl-reports"
 ON storage.objects FOR SELECT
 USING (bucket_id = 'tdl-reports');
 
 -- Storage policy: Allow service role write access
-CREATE POLICY IF NOT EXISTS "Service role write access for tdl-reports"
+DROP POLICY IF EXISTS "Service role write access for tdl-reports" ON storage.objects;
+CREATE POLICY "Service role write access for tdl-reports"
 ON storage.objects FOR INSERT
 WITH CHECK (bucket_id = 'tdl-reports');
 
-CREATE POLICY IF NOT EXISTS "Service role update access for tdl-reports"
+DROP POLICY IF EXISTS "Service role update access for tdl-reports" ON storage.objects;
+CREATE POLICY "Service role update access for tdl-reports"
 ON storage.objects FOR UPDATE
 USING (bucket_id = 'tdl-reports');
 

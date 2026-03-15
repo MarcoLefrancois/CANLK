@@ -82,7 +82,7 @@ CREATE INDEX idx_sop_product ON tdl_sop_documents(product_type);
 -- Insert sample SOP documents
 INSERT INTO tdl_sop_documents (sharepoint_id, client_id, title, description, product_type, version) VALUES
     ('SP-001', NULL, 'Procédure Standard - Vernis UV', 'Procédure de contrôle qualité pour application de vernis UV', 'Vernis', '2.1'),
-    ('SP-002', NULL, 'Guide Application - Peintures', 'Guide pour l\'application de peintures hydro', 'Peinture', '1.5'),
+    ('SP-002', NULL, 'Guide Application - Peintures', 'Guide pour l''application de peintures hydro', 'Peinture', '1.5'),
     ('SP-003', NULL, 'Contrôle Qualité - Couleurs', 'Procédure de contrôle des couleurs', 'Couleur', '3.0')
 ON CONFLICT (sharepoint_id) DO NOTHING;
 
